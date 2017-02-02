@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>게임화면</title>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="http://localhost/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="./resources/libraries/jquery-3.1.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="./css/stylesheet.css">
+	</head>
+	<body>
+		<section class="loading-cover"></section>
+		<section id="site-menu">
+			<article class="top">
+			<!--
+				<div class="thumbnail"><img src="http://cfile30.uf.tistory.com/image/25319A4953FC5C5227C7E2"></div>
+				<div class="profile">
+					<span class="nick">닉네임</span>
+				</div>
+			-->
+				마을의 숲 1-1
+			</article>
+			<article class="msg"></article>
+			<article class="msg-input">
+				<div class="input-area">
+					<textarea id="comment-input" placeholder="이 박스에 메세지를 입력해주세요."></textarea>
+				</div>
+			</article>
+		</section>
+		<section id="container">
+			<canvas id="canvas">
+				HTML5를 지원하지않는 브라우저입니다.
+			</canvas>
+			<section id="menu">
+				<content>
+					<article class="thumbnail"></article>
+				</content>
+			</section>
+		</section>
+		<script type="text/javascript">
+			var socket=io.connect("http://localhost");
+			var tileSize=64; //64x64
+			var _token="<%= _token %>";
+			var players=[];
+			var player;
+			socket.emit("cRequestAuth",_token);
+			socket.on("sResponseAuth",function(res){
+				if(res.result=="error"){
+					alert("회원인증에 실패하였습니다.\n관리자이메일로 문의주세요.");
+					return;
+				}
+				var id=res.player.id;
+				players[id]=res.player;
+				player     =players[id];
+				OnAuth();
+			});
+
+			window.requestAnimationFrame = function() {
+			return window.requestAnimationFrame ||
+			window.webkitRequestAnimationFrame ||
+			mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame ||
+			window.msRequestAnimationFrame ||
+			function (callback) {
+			window.setTimeout(callback, 1000);
+			}
+			}();
+		</script>
+		<script type="text/javascript" src="./js/sprite.js"></script>
+		<script type="text/javascript" src="./js/logic.js"></script>
+	</body>
+</html>
